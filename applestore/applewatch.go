@@ -5,7 +5,6 @@ import (
 	"errors"
 	"fmt"
 	"io/ioutil"
-	"log"
 	"net/http"
 	"strconv"
 	"time"
@@ -103,7 +102,7 @@ func Get(url string) (*Shop, error) {
 	defer resp.Body.Close()
 
 	if resp.StatusCode != 200 {
-		return nil, errors.New(fmt.Sprintf("request failed: %d", resp.StatusCode))
+		return nil, errors.New(fmt.Sprintf("status: %s", resp.Status))
 	}
 
 	body, err := ioutil.ReadAll(resp.Body)
@@ -120,12 +119,12 @@ func Get(url string) (*Shop, error) {
 	return s, nil
 }
 
-func Print(s *Shop) {
+// Check checks if it's in stock.
+func Check(s *Shop) bool {
 	for _, v := range s.Body.Stores {
 		if v.PartsAvailability.Z0YQ.StoreSelectionEnabled {
-			log.Println("In stock.")
-		} else {
-			log.Println("Out of stock.")
+			return true
 		}
 	}
+	return false
 }

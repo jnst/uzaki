@@ -2,6 +2,7 @@ package main
 
 import (
 	"github.com/jnst/uzaki/applestore"
+	"github.com/jnst/uzaki/msg"
 	"github.com/jnst/uzaki/yamatomichi"
 	"log"
 	"time"
@@ -35,10 +36,14 @@ func checkAppleStore() {
 
 		s, err := applestore.Get(url)
 		if err != nil {
-			log.Println(s)
+			msg.Notify("Apple Watch Series 6", err.Error(), false)
+			time.Sleep(1 * time.Hour)
+			continue
 		}
 
-		applestore.Print(s)
+		if applestore.Check(s) {
+			msg.Notify("Apple Watch Series 6", "チャコールブレイデッドソロループ in stock now!", true)
+		}
 
 		time.Sleep(6 * time.Minute)
 	}
