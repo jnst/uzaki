@@ -1,22 +1,24 @@
 package main
 
 import (
+	"fmt"
+	"log"
+	"time"
+
+	"github.com/aws/aws-lambda-go/lambda"
 	"github.com/jnst/uzaki/applestore"
 	"github.com/jnst/uzaki/msg"
 	"github.com/jnst/uzaki/yamatomichi"
-	"log"
-	"time"
 )
 
 func main() {
-	//checkYamatomichi()
-	checkAppleStore()
+	lambda.Start(checkAppleStore)
 }
 
 func checkYamatomichi() {
 	for {
 		url := yamatomichi.CreateURL()
-		log.Printf("requesting to %s", url)
+		log.Printf("requesting to %s\n", url)
 
 		s, err := yamatomichi.Get(url)
 		if err != nil {
@@ -29,22 +31,21 @@ func checkYamatomichi() {
 	}
 }
 
-func checkAppleStore() {
-	for {
-		url := applestore.CreateURL()
-		log.Printf("requesting to %s", url)
+func checkAppleStore() error {
+	url := applestore.CreateURL()
+	fmt.Printf("requesting to %s\n", url)
 
-		s, err := applestore.Get(url)
-		if err != nil {
-			msg.Notify("Apple Watch Series 6", err.Error(), false)
-			time.Sleep(1 * time.Hour)
-			continue
-		}
-
-		if applestore.Check(s) {
-			msg.Notify("Apple Watch Series 6", "チャコールブレイデッドソロループ in stock now!", true)
-		}
-
-		time.Sleep(6 * time.Minute)
+	s, err := applestore.Get(url)
+	if err != nil {
+		return err
 	}
+
+	if applestore.Check(s) {
+		fmt.Println("in stock now.")
+		msg.Notify("Apple Watch Series 6", "チャコールブレイデッドソロループ in stock now!", true)
+	} else {
+		fmt.Println("nothing update.")
+	}
+
+	return nil
 }

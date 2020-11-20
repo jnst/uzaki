@@ -3,9 +3,10 @@ package msg
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/slack-go/slack"
 	"strconv"
 	"time"
+
+	"github.com/slack-go/slack"
 )
 
 // Notify notifies message with slack.

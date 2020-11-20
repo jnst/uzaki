@@ -102,7 +102,7 @@ func Get(url string) (*Shop, error) {
 	defer resp.Body.Close()
 
 	if resp.StatusCode != 200 {
-		return nil, errors.New(fmt.Sprintf("status: %s", resp.Status))
+		return nil, errors.New(fmt.Sprintf("status: %s\n", resp.Status))
 	}
 
 	body, err := ioutil.ReadAll(resp.Body)
@@ -119,7 +119,7 @@ func Get(url string) (*Shop, error) {
 	return s, nil
 }
 
-// Check checks if it's in stock.
+// Check checks stock availability.
 func Check(s *Shop) bool {
 	for _, v := range s.Body.Stores {
 		if v.PartsAvailability.Z0YQ.StoreSelectionEnabled {
