@@ -1,17 +1,16 @@
-package yamatomichi
+package usecase
 
 import (
 	"encoding/json"
 	"errors"
 	"fmt"
 	"io/ioutil"
-	"log"
 	"net/http"
 	"strconv"
 	"time"
 )
 
-type Shop struct {
+type YamatomichiResponse struct {
 	Product struct {
 		ID             int64     `json:"id"`
 		Title          string    `json:"title"`
@@ -85,12 +84,29 @@ type Shop struct {
 	} `json:"product"`
 }
 
-func CreateURL() string {
+type FivePocketShortsUsecase struct {
+	res *YamatomichiResponse
+}
+
+func (u *FivePocketShortsUsecase) CreateURL() string {
 	sec := strconv.FormatInt(time.Now().Unix(), 10)
 	return "https://yamatomichi.myshopify.com/products/dw-5-pocket-shorts-m.json?_=" + sec
 }
 
-func Get(url string) (*Shop, error) {
+func (u *FivePocketShortsUsecase) CheckStock() (bool, error) {
+	return false, nil
+}
+
+func (u *FivePocketShortsUsecase) String() string {
+	for _, v := range u.res.Product.Variants {
+		if v.InventoryQuantity > 0 {
+			return fmt.Sprintf("title: %s, quantity: %d, old_quantity: %d, updated_at: %v\n", v.Title, v.InventoryQuantity, v.OldInventoryQuantity, v.UpdatedAt)
+		}
+	}
+	return ""
+}
+
+func (u *FivePocketShortsUsecase) get(url string) (*YamatomichiResponse, error) {
 	resp, err := http.Get(url)
 	if err != nil {
 		return nil, err
@@ -106,19 +122,11 @@ func Get(url string) (*Shop, error) {
 		return nil, err
 	}
 
-	s := &Shop{}
+	s := &YamatomichiResponse{}
 	err = json.Unmarshal(body, s)
 	if err != nil {
 		return nil, err
 	}
 
 	return s, nil
-}
-
-func Print(s *Shop) {
-	for _, v := range s.Product.Variants {
-		if v.InventoryQuantity > 0 {
-			log.Printf("title: %s, quantity: %d, old_quantity: %d, updated_at: %v\n", v.Title, v.InventoryQuantity, v.OldInventoryQuantity, v.UpdatedAt)
-		}
-	}
 }

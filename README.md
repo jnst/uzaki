@@ -1,6 +1,6 @@
 ## uzaki
 
-A tool to check the incoming status of a product.
+A tool to check the stock of a product.
 
 ## Install
 
@@ -35,6 +35,8 @@ Required to perform `serverless invoke local`.
 ```bash
 make local
 ```
+
+Make sure the docker is running.
 
 ### AWS Lambda
 

@@ -1,4 +1,4 @@
-package applestore
+package usecase
 
 import (
 	"encoding/json"
@@ -10,7 +10,7 @@ import (
 	"time"
 )
 
-type Shop struct {
+type AppleStoreResponse struct {
 	Head struct {
 		Status string `json:"status"`
 		Data   struct {
@@ -89,12 +89,32 @@ type Shop struct {
 	} `json:"body"`
 }
 
-func CreateURL() string {
+type AppleWatchUsecase struct {}
+
+func (u *AppleWatchUsecase) CreateURL() string {
 	sec := strconv.FormatInt(time.Now().Unix(), 10)
 	return "https://www.apple.com/jp/shop/retail/pickup-message?parts.0=Z0YQ&option.0=MG1A3J%2FA%2CMY7A2FE%2FA&store=R224&_=" + sec
 }
 
-func Get(url string) (*Shop, error) {
+func (u *AppleWatchUsecase) CheckStock() (bool, error) {
+	res, err := u.get(u.CreateURL())
+	if err != nil {
+		return false, err
+	}
+
+	for _, v := range res.Body.Stores {
+		if v.PartsAvailability.Z0YQ.StoreSelectionEnabled {
+			return true, nil
+		}
+	}
+	return false, nil
+}
+
+func (u *AppleWatchUsecase) String() string {
+	return "Charcoal Braided Solo Loop size 6 in stock now!"
+}
+
+func (u *AppleWatchUsecase) get(url string) (*AppleStoreResponse, error) {
 	resp, err := http.Get(url)
 	if err != nil {
 		return nil, err
@@ -110,21 +130,11 @@ func Get(url string) (*Shop, error) {
 		return nil, err
 	}
 
-	s := &Shop{}
+	s := &AppleStoreResponse{}
 	err = json.Unmarshal(body, s)
 	if err != nil {
 		return nil, err
 	}
 
 	return s, nil
-}
-
-// Check checks stock availability.
-func Check(s *Shop) bool {
-	for _, v := range s.Body.Stores {
-		if v.PartsAvailability.Z0YQ.StoreSelectionEnabled {
-			return true
-		}
-	}
-	return false
 }

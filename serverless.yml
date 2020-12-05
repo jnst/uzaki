@@ -58,8 +58,8 @@ package:
     - ./bin/**
 
 functions:
-  applewatch:
-    handler: bin/applewatch
+  stock_checker:
+    handler: bin/stock_checker
     events:
       - schedule: rate(6 minutes)
 

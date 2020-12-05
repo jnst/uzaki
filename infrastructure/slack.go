@@ -1,4 +1,4 @@
-package msg
+package infrastructure
 
 import (
 	"encoding/json"
@@ -9,16 +9,17 @@ import (
 	"github.com/slack-go/slack"
 )
 
-// Notify notifies message with slack.
-func Notify(name, text string, ok bool) {
+type Slack struct {}
+
+func (s *Slack) Notify(success bool, title, text string) {
 	color := "good"
-	if !ok {
+	if !success {
 		color = "warning"
 	}
 
 	attachment := slack.Attachment{
 		Color:         color,
-		AuthorName:    name,
+		AuthorName:    title,
 		AuthorSubname: "by uzaki",
 		Text:          text,
 		Ts:            json.Number(strconv.FormatInt(time.Now().Unix(), 10)),
