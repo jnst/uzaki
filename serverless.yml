@@ -27,7 +27,7 @@ provider:
   timeout: 6
   logRetentionInDays: 7
   environment:
-    SLACK_WEBHOOK_URL: ${file(./slack.yml)}
+    SLACK_WEBHOOK_URL: ${file(./slack.yml):webhook_url}
 
 # you can overwrite defaults here
   stage: dev
