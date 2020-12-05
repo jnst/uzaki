@@ -12,3 +12,6 @@ deploy: clean build
 
 local: clean build
 	sls invoke local --function stock_checker --verbose
+
+setup:
+	@if [ ! -e slack.yml ]; then touch slack.yml && echo "webhook_url: https://hooks.slack.com/services/*********/*********/************************" >> slack.yml;else echo "slack.yml is already exists."; fi

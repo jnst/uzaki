@@ -26,6 +26,8 @@ provider:
   memorySize: 128
   timeout: 6
   logRetentionInDays: 7
+  environment:
+    SLACK_WEBHOOK_URL: ${file(./slack.yml)}
 
 # you can overwrite defaults here
   stage: dev

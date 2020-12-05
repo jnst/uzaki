@@ -28,7 +28,20 @@ Required to perform `serverless invoke local`.
 
 * [Get Started with Docker | Docker](https://www.docker.com/get-started)
 
+## Setup
+
+This application uses Slack for notifications, so you need a webhook URL.
+
+```bash
+make setup
+```
+
+Rewrite `webhook_url` in slack.yml.
+
 ## Run
+
+### Setup `slack.yml`
+
 
 ### Local environment
 

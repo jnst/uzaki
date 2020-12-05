@@ -9,7 +9,13 @@ import (
 	"github.com/slack-go/slack"
 )
 
-type Slack struct {}
+type Slack struct {
+	webhookURL string
+}
+
+func NewSlack(webhookURL string) *Slack {
+	return &Slack{webhookURL: webhookURL}
+}
 
 func (s *Slack) Notify(success bool, title, text string) {
 	color := "good"
@@ -28,7 +34,7 @@ func (s *Slack) Notify(success bool, title, text string) {
 		Attachments: []slack.Attachment{attachment},
 	}
 
-	err := slack.PostWebhook("https://hooks.slack.com/services/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", &msg)
+	err := slack.PostWebhook(s.webhookURL, &msg)
 	if err != nil {
 		fmt.Println(err)
 	}

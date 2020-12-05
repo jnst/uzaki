@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"os"
 
 	"github.com/aws/aws-lambda-go/lambda"
 	"github.com/jnst/uzaki/domain"
@@ -11,7 +12,10 @@ import (
 
 func main() {
 	lambda.Start(func() {
-		var n domain.Notifier = &infrastructure.Slack{}
+		webhookURL := os.Getenv("SLACK_WEBHOOK_URL")
+		fmt.Printf("Slack WebhookURL: %s\n", webhookURL)
+
+		var n domain.Notifier = infrastructure.NewSlack(webhookURL)
 		var c domain.StockChecker = &usecase.AppleWatchUsecase{}
 
 		ok, err := c.CheckStock()
