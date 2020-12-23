@@ -15,3 +15,6 @@ local: clean build
 
 setup:
 	@if [ ! -e slack.yml ]; then touch slack.yml && echo "webhook_url: https://hooks.slack.com/services/*********/*********/************************" >> slack.yml;else echo "slack.yml is already exists."; fi
+
+destroy:
+	sls remove
